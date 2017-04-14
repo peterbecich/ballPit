@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="myCanvas" width="600" height="600" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var canvasContext = canvas.getContext("2d");
+var x = 95
+var y = 50
+
+function draw() {
+  canvasContext.beginPath();
+  canvasContext.arc(x,y,40,0,2*Math.PI);
+  canvasContext.stroke();
+}
+
+function move() {
+  x++;
+  draw();
+  setTimeout(move, 60);
+}
+
+move();
+
+</script> 
+
+</body>
+</html>
