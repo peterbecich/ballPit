@@ -24,3 +24,5 @@ scottyMain = scotty 3000 $ do
     y <- param "y" :: ActionM Double
     _ <- liftIO $ putStrLn $ show x ++ " " ++ show y
     html $ pack $ (show x) ++ " " ++ (show y)
+  get "/ballX" $ text "300"
+  get "/ballY" $ text "300"

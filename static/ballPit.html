@@ -29,26 +29,43 @@
 	angle: 45
 	});
 
-	var ball = new fabric.Circle({
-	left: 200,
-	top: 200,
-	fill: 'blue',
-	radius: 30
-	});
+	var ballStartLeft = 50;
+	var ballStartTop = 50;
+
+	jQuery.get(backend+"/ballX", function ( data ) {
+	  console.log ( "get X: "+data);
+	  ballStartLeft = parseFloat(data);
+	  jQuery.get(backend+"/ballY", function ( data ) {
+	    console.log ( "get Y: "+data);
+	    ballStartTop = parseFloat(data);
+	    var ball = new fabric.Circle({
+	      left: ballStartLeft,
+	      top: ballStartTop,
+	      fill: 'blue',
+	      radius: 30
+	    });
 	
+
+	    canvas.add(ball);
+
+            console.log("make ball")
+
+	    // http://fabricjs.com/fabric-intro-part-2#events
+	    ball.on('moving', function(e) {
+	      jQuery.post(backend+"/moveBall?x="+ball.left+"&y="+ball.top, function ( data ) { console.log ("posted ball position: "+data) })
+	    })
+
+	    // https://api.jquery.com/jquery.get/
+	    jQuery.get(backend+"/foo", function ( data ) { console.log ( "get: "+data) } )
+
+	    jQuery.post(backend+"/moveBall?x="+ball.left+"&y="+ball.top, function ( data ) { console.log ("posted ball position: "+data) })
+	
+	  } )
+	} )
+
+
 	canvas.add(rect);
 
-	canvas.add(ball);
-
-	// http://fabricjs.com/fabric-intro-part-2#events
-	canvas.on('object:moving', function(e) {
-	jQuery.post(backend+"/moveBall?x="+ball.left+"&y="+ball.top, function ( data ) { console.log ("posted ball position: "+data) })
-	})
-
-	// https://api.jquery.com/jquery.get/
-	jQuery.get(backend+"/foo", function ( data ) { console.log ( "get: "+data) } )
-
-	jQuery.post(backend+"/moveBall?x="+ball.left+"&y="+ball.top, function ( data ) { console.log ("posted ball position: "+data) })
 
 	console.log("hello")
 	
