@@ -19,6 +19,7 @@ type BallPosition = (Double, Double)
 -- type BallPit = StateT BallPosition S.ActionM
 
 -- http://stackoverflow.com/questions/27495381/use-statet-within-web-scotty
+-- https://codereview.stackexchange.com/questions/82357/small-web-service-using-scotty?newreg=94959da35e984e06887b636d4cc71bea
 
 scottyMain :: IO ()
 scottyMain = undefined
