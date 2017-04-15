@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 <html>
-<body>
+  <head>
+    <!-- http://stackoverflow.com/questions/25474461/how-can-i-set-up-fabric-js     -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.9/fabric.min.js"></script>
+  </head>
+  <body>
+      <canvas id="c" width="600" height="600" style="border:1px solid #d3d3d3;">
+	Your browser does not support the HTML5 canvas tag.
+      </canvas>
+      
+      <script id="main">
 
-<canvas id="myCanvas" width="600" height="600" style="border:1px solid #d3d3d3;">
-Your browser does not support the HTML5 canvas tag.</canvas>
-
-<script>
-var canvas = document.getElementById("myCanvas");
-var canvasContext = canvas.getContext("2d");
-var x = 95
-var y = 50
-
-function draw() {
-  canvasContext.beginPath();
-  canvasContext.arc(x,y,40,0,2*Math.PI);
-  canvasContext.stroke();
-}
-
-function move() {
-  x++;
-  draw();
-  setTimeout(move, 60);
-}
-
-move();
-
-</script> 
-
-</body>
+	// http://fabricjs.com/fabric-intro-part-1
+	var canvas = new fabric.Canvas('c');
+	
+	var rect = new fabric.Rect({
+	left: 100,
+	top: 100,
+	fill: 'red',
+	width: 20,
+	height: 20,
+	angle: 45
+	});
+	
+	canvas.add(rect);
+	
+      </script> 
+      
+      
+  </body>
 </html>
