@@ -2,7 +2,8 @@
 
 module Lib ( scottyMain ) where
 
-import qualified Web.Scotty.Trans as S
+--import qualified Web.Scotty.Trans as S
+import qualified Web.Scotty as S
 import Web.Scotty.Internal.Types (ScottyT)
 import Data.Monoid (mconcat)
 import Data.Text.Lazy (pack)
@@ -15,6 +16,7 @@ import Control.Monad.Trans.State.Lazy
 -- https://hackage.haskell.org/package/scotty
 
 type BallPosition = (Double, Double)
+initialBallPosition = (100, 100)
 
 -- type BallPit = StateT BallPosition S.ActionM
 
@@ -22,7 +24,7 @@ type BallPosition = (Double, Double)
 -- https://codereview.stackexchange.com/questions/82357/small-web-service-using-scotty?newreg=94959da35e984e06887b636d4cc71bea
 
 scottyMain :: IO ()
-scottyMain = undefined
+scottyMain = S.scotty 3000 routes
 
   -- do
   -- let s0 = "message"
@@ -31,32 +33,27 @@ scottyMain = undefined
   -- S.scottyT 3000 transform runner routes
 
 
-restartableStateT :: s -> IO (StateT s IO a -> IO a)
-restartableStateT s0 = do
-  r <- newIORef s0
-  return $ \act -> do
-    s <- readIORef r
-    (x, s') <- runStateT act s
-    atomicModifyIORef' r $ const (s', x)
-    
+-- restartableStateT :: s -> IO (StateT s IO a -> IO a)
+-- restartableStateT s0 = do
+--   r <- newIORef s0
+--   return $ \act -> do
+--     s <- readIORef r
+--     (x, s') <- runStateT act s
+--     atomicModifyIORef' r $ const (s', x)
 
 
+routes :: ScottyT Text IO ()
+routes = fmap (\_ -> ()) $ execStateT stateRoutes initialBallPosition
 
--- routes :: ScottyT Text IO ()
--- routes = do
---   S.get "/beam/:word" $ do
---     beam <- S.param "word"
---     S.html $ mconcat ["<h1>Scotty, ", beam, " me up!</h1>"]
---   S.get "/" $ S.file "static/ballPit.html"
---   S.get "/foo" $ do
---     S.html $ "hello from Scotty"
---   S.post "/moveBall" $ do
---     -- http://stackoverflow.com/questions/39378493/ambiguous-type-variable-a0-arising-from-a-use-of-param-prevents-the-constrai
---     x <- S.param "x" :: S.ActionT Double
---     y <- S.param "y" :: S.ActionT Double
---     _ <- liftIO $ putStrLn $ show x ++ " " ++ show y
---     S.html $ pack $ (show x) ++ " " ++ (show y)
---   -- S.get "/ballX" $ lift $ do
---   --   (x, y) <- get
---   --   return (S.text 1.234)
---   S.get "/ballY" $ S.text "300"
+stateRoutes :: StateT BallPosition (ScottyT Text IO) ()
+stateRoutes = do
+  (x, y) <- get
+  _ <- lift $ S.get "/ballX" $ S.text (pack (show x))
+  lift $ S.get "/ballY" $ S.text (pack (show y))
+  -- (x', y') <- lift $ S.post "/moveBall" $ do
+  --   x'' <- S.param "x" :: S.ActionM Double
+  --   y'' <- S.param "y" :: S.ActionM Double
+  --   _ <- liftIO $ putStrLn $ show x ++ " " ++ show y
+  --   S.html $ pack $ (show x) ++ " " ++ (show y)
+  -- S.get "/" $ S.file "static/ballPit.html"
+
